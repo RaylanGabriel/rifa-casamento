@@ -208,11 +208,12 @@ function renderNumeros() {
                 const nome = prompt(`Digite o nome de quem comprou o número ${i}:`);
                 if (!nome) return;
 
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ numero: i, nome: nome.trim() })
-                });
+               await fetch(API_URL, {
+    method: "POST",
+    mode: 'no-cors', // ADICIONE ESTA LINHA
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ numero: i, nome: nome.trim() })
+});
 
                 carregarNumeros();
             };
@@ -244,6 +245,7 @@ function ampliarImagem() {
 
 </body>
 </html>
+
 
 
 
