@@ -208,17 +208,30 @@ function renderNumeros() {
                 const nome = prompt(`Digite o nome de quem comprou o número ${i}:`);
                 if (!nome) return;
 
-               await fetch(API_URL, {
-    method: "POST",
-    mode: 'no-cors', // ADICIONE ESTA LINHA
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ numero: i, nome: nome.trim() })
-});
+                const originalText = div.innerText;
+                div.innerText = "..."; 
 
-                carregarNumeros();
+                try {
+                    await fetch(API_URL, {
+                        method: "POST",
+                        mode: 'no-cors', 
+                        headers: { "Content-Type": "text/plain" },
+                        body: JSON.stringify({ numero: i, nome: nome.trim() })
+                    });
+
+                    alert("Reserva enviada com sucesso!");
+                    
+                    setTimeout(() => {
+                        carregarNumeros();
+                    }, 2000);
+
+                } catch (e) {
+                    alert("Erro ao tentar salvar. Tente novamente.");
+                    div.innerText = originalText;
+                    console.error(e);
+                }
             };
         }
-
         container.appendChild(div);
     }
 }
@@ -245,6 +258,7 @@ function ampliarImagem() {
 
 </body>
 </html>
+
 
 
 
