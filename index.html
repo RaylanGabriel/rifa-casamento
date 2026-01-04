@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rifa de Casamento • Hemilly & Matheus</title>
 
 <style>
@@ -39,7 +40,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Estilo da Busca e Filtros */
 .controles {
     display: flex;
     flex-direction: column;
@@ -112,6 +112,13 @@ body {
     font-weight: 600;
 }
 
+.contador {
+    text-align: center;
+    font-weight: bold;
+    color: var(--vinho);
+    margin-bottom: 15px;
+}
+
 .imagem-rifa {
     display: block;
     margin: 0 auto 25px;
@@ -148,7 +155,6 @@ body {
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
@@ -161,41 +167,87 @@ body {
     </div>
 
     <div class="premio">🎁 Prêmio: Pix de <strong>R$ 2.000,00</strong></div>
+    
+    <div class="contador" id="status-rifa">Carregando números...</div>
 
-    <img 
-        src="favicon.png"
-        class="imagem-rifa"
-        id="imgRifa"
-        onclick="ampliarImagem()"
-    >
+    <img src="favicon.png" class="imagem-rifa" id="imgRifa">
+
+    <div class="controles">
+        <input type="number" id="busca" class="busca-input" placeholder="🔍 Ir para o número...">
+        
+        <div class="filtros" id="filtros">
+            <button class="btn-filtro ativo" onclick="filtrar(1, 100, this)">1-100</button>
+            <button class="btn-filtro" onclick="filtrar(101, 200, this)">101-200</button>
+            <button class="btn-filtro" onclick="filtrar(201, 300, this)">201-300</button>
+            <button class="btn-filtro" onclick="filtrar(301, 400, this)">301-400</button>
+            <button class="btn-filtro" onclick="filtrar(401, 500, this)">401-500</button>
+            <button class="btn-filtro" onclick="filtrar(501, 600, this)">501-600</button>
+            <button class="btn-filtro" onclick="filtrar(601, 700, this)">601-700</button>
+            <button class="btn-filtro" onclick="filtrar(701, 800, this)">701-800</button>
+            <button class="btn-filtro" onclick="filtrar(801, 900, this)">801-900</button>
+            <button class="btn-filtro" onclick="filtrar(901, 1000, this)">901-1000</button>
+        </div>
+    </div>
 
     <div class="numeros" id="numeros"></div>
 </div>
 
 <script>
 const totalNumeros = 1000;
-const API_URL = "https://script.google.com/macros/s/AKfycbyo2QoTBYG7GDK8DXttK1LxLRwieCYTDgnL2-7dZoSDYoiQnV6B0Dt2GPeg_szMfqQMxA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyo2QoTBYG7GDK8DXttK1LxLRwieCYTDgnL2-7dZoSDYoiQnV6B0Dt2GPeg_szMfqQMxA/exec"; 
 
 const container = document.getElementById("numeros");
+const statusRifa = document.getElementById("status-rifa");
 let numerosVendidos = [];
+let minAtual = 1;
+let maxAtual = 100;
 
 document.addEventListener("DOMContentLoaded", carregarNumeros);
+
+document.getElementById('busca').addEventListener('input', function(e) {
+    const num = parseInt(e.target.value);
+    if (num > 0 && num <= totalNumeros) {
+        const min = Math.floor((num - 1) / 100) * 100 + 1;
+        const max = min + 99;
+        
+        const botoes = document.querySelectorAll('.btn-filtro');
+        botoes.forEach(btn => {
+            btn.classList.toggle('ativo', btn.innerText === `${min}-${max}`);
+        });
+
+        filtrar(min, max);
+    }
+});
 
 async function carregarNumeros() {
     try {
         const res = await fetch(API_URL);
         numerosVendidos = await res.json();
-        renderNumeros();
+        
+        // Atualiza o contador
+        const disponiveis = totalNumeros - numerosVendidos.length;
+        statusRifa.innerText = `${disponiveis} números disponíveis de ${totalNumeros}`;
+        
+        renderNumeros(minAtual, maxAtual);
     } catch (e) {
-        alert("Erro ao carregar números da rifa");
-        console.error(e);
+        console.error("Erro ao carregar:", e);
+        statusRifa.innerText = "Erro ao carregar dados.";
     }
 }
 
-function renderNumeros() {
-    container.innerHTML = "";
+function filtrar(min, max, btn) {
+    minAtual = min;
+    maxAtual = max;
+    if (btn) {
+        document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
+        btn.classList.add('ativo');
+    }
+    renderNumeros(min, max);
+}
 
-    for (let i = 1; i <= totalNumeros; i++) {
+function renderNumeros(min, max) {
+    container.innerHTML = "";
+    for (let i = min; i <= max; i++) {
         const div = document.createElement("div");
         div.className = "numero";
         div.innerText = i;
@@ -204,35 +256,23 @@ function renderNumeros() {
 
         if (vendido) {
             div.classList.add("vendido");
-            div.onclick = () => {
-                alert(`Número ${i}\nComprador: ${vendido.nome}`);
-            };
+            div.onclick = () => alert(`Número ${i}\nComprador: ${vendido.nome}`);
         } else {
             div.onclick = async () => {
-                const nome = prompt(`Digite o nome de quem comprou o número ${i}:`);
+                const nome = prompt(`Nome para o número ${i}:`);
                 if (!nome) return;
-
-                const originalText = div.innerText;
-                div.innerText = "..."; 
-
+                div.innerText = "...";
                 try {
                     await fetch(API_URL, {
                         method: "POST",
-                        mode: 'no-cors', 
-                        headers: { "Content-Type": "text/plain" },
+                        mode: 'no-cors',
                         body: JSON.stringify({ numero: i, nome: nome.trim() })
                     });
-
-                    alert("Reserva enviada com sucesso!");
-                    
-                    setTimeout(() => {
-                        carregarNumeros();
-                    }, 2000);
-
+                    alert("Reserva enviada! Assim que confirmado o Pix, seu nome aparecerá aqui.");
+                    setTimeout(carregarNumeros, 1500);
                 } catch (e) {
-                    alert("Erro ao tentar salvar. Tente novamente.");
-                    div.innerText = originalText;
-                    console.error(e);
+                    alert("Erro ao salvar.");
+                    renderNumeros(minAtual, maxAtual);
                 }
             };
         }
@@ -242,30 +282,8 @@ function renderNumeros() {
 
 function copyPix() {
     navigator.clipboard.writeText("hemillyematheuscasamento@gmail.com");
-    alert("Chave Pix copiada!");
-}
-
-function ampliarImagem() {
-    const img = document.getElementById("imgRifa");
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-
-    overlay.onclick = () => {
-        img.classList.remove("ampliada");
-        overlay.remove();
-    };
-
-    img.classList.add("ampliada");
-    document.body.appendChild(overlay);
+    alert("Pix copiado!");
 }
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
