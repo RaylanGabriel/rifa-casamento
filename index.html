@@ -256,25 +256,42 @@ function renderNumeros(min, max) {
 
         if (vendido) {
             div.classList.add("vendido");
-            div.onclick = () => alert(`Número ${i}\nComprador: ${vendido.nome}`);
+            div.onclick = () => alert(`Número ${i}\nComprador: ${vendido.nome}\nTelefone: ${vendido.telefone || 'Não informado'}`);
         } else {
             div.onclick = async () => {
-                const nome = prompt(`Nome para o número ${i}:`);
-                if (!nome) return;
-                div.innerText = "...";
-                try {
-                    await fetch(API_URL, {
-                        method: "POST",
-                        mode: 'no-cors',
-                        body: JSON.stringify({ numero: i, nome: nome.trim() })
-                    });
-                    alert("Reserva enviada! Assim que confirmado o Pix, seu nome aparecerá aqui.");
-                    setTimeout(carregarNumeros, 1500);
-                } catch (e) {
-                    alert("Erro ao salvar.");
-                    renderNumeros(minAtual, maxAtual);
-                }
-            };
+    const nome = prompt(`Nome para o número ${i}:`);
+    if (!nome) return;
+
+    const telefone = prompt(`Digite o Telefone/WhatsApp de ${nome.trim()}:`);
+    if (!telefone) return;
+
+    const originalText = div.innerText;
+    div.innerText = "..."; 
+
+    try {
+        await fetch(API_URL, {
+            method: "POST",
+            mode: 'no-cors',
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ 
+                numero: i, 
+                nome: nome.trim(), 
+                telefone: telefone.trim() // Enviando o telefone
+            })
+        });
+
+        alert("Reserva enviada com sucesso!");
+        
+        setTimeout(() => {
+            carregarNumeros();
+        }, 1500);
+
+    } catch (e) {
+        alert("Erro ao tentar salvar.");
+        div.innerText = originalText;
+        console.error(e);
+    }
+};
         }
         container.appendChild(div);
     }
@@ -287,3 +304,4 @@ function copyPix() {
 </script>
 </body>
 </html>
+
