@@ -267,25 +267,40 @@
         }
 
         async function finalizarCompra() {
-            const nome = prompt("Digite o seu nome completo!?");
-            if (!nome) return;
-            const tel = prompt("Qual o seu WhatsApp?");
-            if (!tel) return;
+    const nome = prompt("Para quem são os números?");
+    if (!nome) return;
+    const tel = prompt("Qual o seu WhatsApp?");
+    if (!tel) return;
 
-            if (!confirm(`Confirmar reserva dos números: ${selecionados.join(", ")}?`)) return;
+    // 1. Criamos a mensagem de confirmação com a chave Pix
+    const confirmacao = confirm(
+        `Resumo da Reserva:\n\n` +
+        `Nome: ${nome}\n` +
+        `Números: ${selecionados.join(", ")}\n` +
+        `Total: R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}\n\n` +
+        `Chave Pix: hemillyematheuscasamento@gmail.com\n\n` +
+        `Clique em OK para copiar a chave e ir para o WhatsApp enviar o comprovante!`
+    );
 
-            fetch(API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify({ nome, telefone: tel, selecionados })
-            });
+    if (!confirmacao) return;
 
-            const msg = `Olá! Sou ${nome}. Reservei os números: ${selecionados.join(", ")}. Segue comprovante do Pix de R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}.`;
-            const link = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+    // 2. Copia a chave Pix automaticamente para o teclado do celular/PC
+    navigator.clipboard.writeText("hemillyematheuscasamento@gmail.com");
 
-            alert("Reserva enviada! Enviando você para o WhatsApp para mandar o comprovante...");
-            window.location.href = link;
-        }
+    // 3. Envia os dados para a planilha do Google
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({ nome, telefone: tel, selecionados })
+    });
+
+    // 4. Prepara e redireciona para o WhatsApp
+    const msg = `Olá! Sou ${nome}. Reservei os números: ${selecionados.join(", ")}. Acabei de copiar a chave Pix e vou te enviar o comprovante de R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}.`;
+    const link = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+
+    alert("Chave Pix copiada com sucesso! Abrindo seu WhatsApp...");
+    window.location.href = link;
+}
 
         // Gerador de Filtros
         const filtrosDiv = document.getElementById("filtros");
@@ -322,5 +337,6 @@
 </body>
 
 </html>
+
 
 
