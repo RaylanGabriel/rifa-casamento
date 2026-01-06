@@ -267,18 +267,18 @@
         }
 
         async function finalizarCompra() {
-    const nome = prompt("Para quem são os números?");
+    const nome = prompt("Digite seu nome!?");
     if (!nome) return;
     const tel = prompt("Qual o seu WhatsApp?");
     if (!tel) return;
 
     // 1. Criamos a mensagem de confirmação com a chave Pix
     const confirmacao = confirm(
-        `Resumo da Reserva:\n\n` +
+        `Resumo da Reserva:\n` +
         `Nome: ${nome}\n` +
         `Números: ${selecionados.join(", ")}\n` +
-        `Total: R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}\n\n` +
-        `Chave Pix: hemillyematheuscasamento@gmail.com\n\n` +
+        `Total: R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}\n` +
+        `Chave Pix: hemillyematheuscasamento@gmail.com\n` +
         `Clique em OK para copiar a chave e ir para o WhatsApp enviar o comprovante!`
     );
 
@@ -337,6 +337,7 @@
 </body>
 
 </html>
+
 
 
 
