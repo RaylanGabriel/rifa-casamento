@@ -1,380 +1,414 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rifa de Casamento • Hemilly & Matheus</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png" />
     <style>
-        :root {
-            --rosa: #f7c6d0;
-            --vinho: #8b2c3a;
-            --dourado: #c9a24d;
-            --cinza: #999;
-            --fundo: #fff8f6;
-            --selecionado: #ffd700;
+      :root {
+        --rosa: #f7c6d0;
+        --vinho: #8b2c3a;
+        --dourado: #c9a24d;
+        --cinza: #999;
+        --fundo: #fff8f6;
+        --selecionado: #ffd700;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: var(--fundo);
+        color: #4a2a2a;
+        padding-bottom: 110px;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .titulo {
+        text-align: center;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--vinho);
+        margin-bottom: 5px;
+      }
+
+      .pix-box {
+        background: white;
+        border-radius: 16px;
+        padding: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .pix-btn {
+        background: var(--dourado);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .controles {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .busca-input {
+        padding: 12px;
+        width: 100%;
+        max-width: 250px;
+        border-radius: 25px;
+        border: 2px solid var(--rosa);
+        text-align: center;
+        outline: none;
+      }
+
+      .filtros {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+      }
+
+      .btn-filtro {
+        background: white;
+        border: 1px solid var(--rosa);
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+
+      .btn-filtro.ativo {
+        background: var(--vinho);
+        color: white;
+      }
+
+      .numeros {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 8px;
+      }
+
+      .numero {
+        background: var(--rosa);
+        color: var(--vinho);
+        border-radius: 50%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        border: 2px solid transparent;
+      }
+
+      .numero.vendido {
+        background: var(--cinza);
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .numero.selecionado {
+        background: var(--selecionado);
+        color: var(--vinho);
+        transform: scale(1.1);
+        border: 2px solid var(--vinho);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .carrinho {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--vinho);
+        color: white;
+        padding: 15px 25px;
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
         }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--fundo);
-            color: #4a2a2a;
-            padding-bottom: 110px;
+        to {
+          transform: translateY(0);
         }
+      }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 20px;
-        }
+      .btn-finalizar {
+        background: #25d366;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      .premio-destaque {
+        background-color: white;
+        border: 1px solid var(--dourado);
+        border-radius: 5px;
+        padding: 3px;
+        text-align: center;
+        margin: 15px auto;
+        max-width: 400px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
 
-        .titulo {
-            text-align: center;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--vinho);
-            margin-bottom: 5px;
-        }
+      .premio-destaque span {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--vinho);
+        letter-spacing: 1px;
+      }
 
-        .pix-box {
-            background: white;
-            border-radius: 16px;
-            padding: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
-            margin-bottom: 20px;
-        }
-
-        .pix-btn {
-            background: var(--dourado);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .controles {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .busca-input {
-            padding: 12px;
-            width: 100%;
-            max-width: 250px;
-            border-radius: 25px;
-            border: 2px solid var(--rosa);
-            text-align: center;
-            outline: none;
-        }
-
-        .filtros {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .btn-filtro {
-            background: white;
-            border: 1px solid var(--rosa);
-            padding: 8px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .btn-filtro.ativo {
-            background: var(--vinho);
-            color: white;
-        }
-
-        .numeros {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            gap: 8px;
-        }
-
-        .numero {
-            background: var(--rosa);
-            color: var(--vinho);
-            border-radius: 50%;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .numero.vendido {
-            background: var(--cinza);
-            color: white;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .numero.selecionado {
-            background: var(--selecionado);
-            color: var(--vinho);
-            transform: scale(1.1);
-            border: 2px solid var(--vinho);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-    
-    
-     .carrinho {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--vinho);
-            color: white;
-            padding: 15px 25px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .btn-finalizar {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        .premio-destaque {
-    background-color: white;
-    border: 1px solid var(--dourado);
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    margin: 15px auto;
-    max-width: 400px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.premio-destaque span {
-    display: block;
-    font-size: 0.6rem;
-    color: var(--vinho);
-    letter-spacing: 1px;
-}
-
-.premio-destaque strong {
-    font-size: 1.8rem;
-    color: var(--vinho);
-    display: block;
-    margin-top: 5px;
-}
+      .premio-destaque strong {
+        font-size: 1.8rem;
+        color: var(--vinho);
+        display: block;
+        margin-top: 5px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
-        <div class="titulo">Hemilly & Matheus 💍</div>
-        <p style="text-align:center; margin-top:0;">Selecione os números desejados e finalize no botão abaixo!</p>
+      <div class="titulo">Hemilly & Matheus 💍</div>
+      <p style="text-align: center; margin-top: 0">
+        Selecione os números desejados e finalize no botão abaixo!
+      </p>
 
-        <div class="pix-box">
-            <span>Chave Pix: <strong>hemillyematheuscasamento26@gmail.com</strong></span>
-            <button class="pix-btn" onclick="copyPix()">Copiar Pix</button>
-        </div>
+      <div class="pix-box">
+        <span
+          >Chave Pix:
+          <strong>hemillyematheuscasamento26@gmail.com</strong></span
+        >
+        <button class="pix-btn" onclick="copyPix()">Copiar Pix</button>
+      </div>
 
-        <div class="controles">
-            <input type="number" id="busca" class="busca-input" placeholder="🔍 Ir para o número...">
-            <div class="filtros" id="filtros"></div>
-        </div>
+      <div class="controles">
+        <input
+          type="number"
+          id="busca"
+          class="busca-input"
+          placeholder="🔍 Ir para o número..."
+        />
+        <div class="filtros" id="filtros"></div>
+      </div>
 
-        <div id="status-rifa" style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--vinho)">
-            Carregando...</div>
-        <img src="favicon.png" class="imagem-rifa" id="imgRifa" style="display: block; margin: 0 auto 25px; max-width: 90%; max-height: 250px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.15);">
-        <div class="premio-destaque">
-    <span>🎁 PRÊMIO:</span>
-    <strong>PIX DE R$ 2.000,00</strong>
-</div>
-        <div class="numeros" id="numeros"></div>
+      <div
+        id="status-rifa"
+        style="
+          text-align: center;
+          margin-bottom: 15px;
+          font-weight: bold;
+          color: var(--vinho);
+        "
+      >
+        Carregando...
+      </div>
+      <img
+        src="favicon.png"
+        class="imagem-rifa"
+        id="imgRifa"
+        style="
+          display: block;
+          margin: 0 auto 25px;
+          max-width: 90%;
+          max-height: 250px;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        "
+      />
+      <div class="premio-destaque">
+        <span>🎁 PRÊMIO:</span>
+        <strong>PIX DE R$ 2.000,00</strong>
+      </div>
+      <div class="numeros" id="numeros"></div>
     </div>
 
     <div class="carrinho" id="carrinho">
-        <div>
-            <span id="qtd-selecionada" style="font-size:1.2rem; font-weight:bold;">0</span> números<br>
-            <strong>Total: R$ <span id="total-valor">0,00</span></strong>
-        </div>
-        <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar e Pagar</button>
+      <div>
+        <span id="qtd-selecionada" style="font-size: 1.2rem; font-weight: bold"
+          >0</span
+        >
+        números<br />
+        <strong>Total: R$ <span id="total-valor">0,00</span></strong>
+      </div>
+      <button class="btn-finalizar" onclick="finalizarCompra()">
+        Finalizar e Pagar
+      </button>
     </div>
 
     <script>
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbyo2QoTBYG7GDK8DXttK1LxLRwieCYTDgnL2-7dZoSDYoiQnV6B0Dt2GPeg_szMfqQMxA/exec";
+      const SEU_WHATSAPP = "554299861164";
+      const VALOR_RIFA = 10.0;
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbyo2QoTBYG7GDK8DXttK1LxLRwieCYTDgnL2-7dZoSDYoiQnV6B0Dt2GPeg_szMfqQMxA/exec";
-        const SEU_WHATSAPP = "554299861164";
-        const VALOR_RIFA = 10.00;
+      let selecionados = [];
+      let vendidos = [];
+      let minAtual = 1,
+        maxAtual = 100;
 
-
-        let selecionados = [];
-        let vendidos = [];
-        let minAtual = 1, maxAtual = 100;
-
-        async function carregar() {
-            try {
-                const res = await fetch(API_URL);
-                vendidos = await res.json();
-                document.getElementById("status-rifa").innerText = `${1000 - vendidos.length} números disponíveis`;
-                render();
-            } catch (e) { console.error(e); }
+      async function carregar() {
+        try {
+          const res = await fetch(API_URL);
+          vendidos = await res.json();
+          document.getElementById("status-rifa").innerText = `${
+            1000 - vendidos.length
+          } números disponíveis`;
+          render();
+        } catch (e) {
+          console.error(e);
         }
+      }
 
-        function render() {
-            const container = document.getElementById("numeros");
-            container.innerHTML = "";
-            for (let i = minAtual; i <= maxAtual; i++) {
-                const div = document.createElement("div");
-                div.className = "numero";
-                const vendido = vendidos.find(v => v.numero == i);
-                const isSel = selecionados.includes(i);
+      function render() {
+        const container = document.getElementById("numeros");
+        container.innerHTML = "";
+        for (let i = minAtual; i <= maxAtual; i++) {
+          const div = document.createElement("div");
+          div.className = "numero";
+          const vendido = vendidos.find((v) => v.numero == i);
+          const isSel = selecionados.includes(i);
 
-                if (vendido) {
-                    div.classList.add("vendido");
-                    div.innerText = "X";
-                    div.onclick = () => alert(`Número ${i} já reservado por ${vendido.nome}`);
-                } else {
-                    div.innerText = i;
-                    if (isSel) div.classList.add("selecionado");
-                    div.onclick = () => alternarSelecao(i);
-                }
-                container.appendChild(div);
-            }
+          if (vendido) {
+            div.classList.add("vendido");
+            div.innerText = "X";
+            div.onclick = () =>
+              alert(`Número ${i} já reservado por ${vendido.nome}`);
+          } else {
+            div.innerText = i;
+            if (isSel) div.classList.add("selecionado");
+            div.onclick = () => alternarSelecao(i);
+          }
+          container.appendChild(div);
         }
+      }
 
-        function alternarSelecao(num) {
-            const index = selecionados.indexOf(num);
-            if (index > -1) selecionados.splice(index, 1);
-            else selecionados.push(num);
-            atualizarCarrinho();
-            render();
+      function alternarSelecao(num) {
+        const index = selecionados.indexOf(num);
+        if (index > -1) selecionados.splice(index, 1);
+        else selecionados.push(num);
+        atualizarCarrinho();
+        render();
+      }
+
+      function atualizarCarrinho() {
+        const barra = document.getElementById("carrinho");
+        if (selecionados.length > 0) {
+          barra.style.display = "flex";
+          document.getElementById("qtd-selecionada").innerText =
+            selecionados.length;
+          document.getElementById("total-valor").innerText = (
+            selecionados.length * VALOR_RIFA
+          ).toFixed(2);
+        } else {
+          barra.style.display = "none";
         }
+      }
 
-        function atualizarCarrinho() {
-            const barra = document.getElementById("carrinho");
-            if (selecionados.length > 0) {
-                barra.style.display = "flex";
-                document.getElementById("qtd-selecionada").innerText = selecionados.length;
-                document.getElementById("total-valor").innerText = (selecionados.length * VALOR_RIFA).toFixed(2);
-            } else {
-                barra.style.display = "none";
-            }
-        }
+      async function finalizarCompra() {
+        const nome = prompt("Digite seu nome!?");
+        if (!nome) return;
+        const tel = prompt("Qual o seu WhatsApp?");
+        if (!tel) return;
 
-        async function finalizarCompra() {
-    const nome = prompt("Digite seu nome!?");
-    if (!nome) return;
-    const tel = prompt("Qual o seu WhatsApp?");
-    if (!tel) return;
+        const confirmacao = confirm(
+          `Resumo da Reserva:\n` +
+            `Nome: ${nome}\n` +
+            `Números: ${selecionados.join(", ")}\n` +
+            `Total: R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}\n` +
+            `Chave Pix: hemillyematheuscasamento26@gmail.com\n` +
+            `Clique em OK para copiar a chave e ir para o WhatsApp enviar o comprovante!`
+        );
 
-    // 1. Criamos a mensagem de confirmação com a chave Pix
-    const confirmacao = confirm(
-        `Resumo da Reserva:\n` +
-        `Nome: ${nome}\n` +
-        `Números: ${selecionados.join(", ")}\n` +
-        `Total: R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}\n` +
-        `Chave Pix: hemillyematheuscasamento26@gmail.com\n` +
-        `Clique em OK para copiar a chave e ir para o WhatsApp enviar o comprovante!`
-    );
+        if (!confirmacao) return;
 
-    if (!confirmacao) return;
+        navigator.clipboard.writeText("hemillyematheuscasamento26@gmail.com");
 
-    // 2. Copia a chave Pix automaticamente para o teclado do celular/PC
-    navigator.clipboard.writeText("hemillyematheuscasamento26@gmail.com");
-
-    // 3. Envia os dados para a planilha do Google
-    fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({ nome, telefone: tel, selecionados })
-    });
-
-    // 4. Prepara e redireciona para o WhatsApp
-    const msg = `Olá! Sou ${nome}. Reservei os números: ${selecionados.join(", ")}. Acabei de copiar a chave Pix e vou te enviar o comprovante de R$ ${(selecionados.length * VALOR_RIFA).toFixed(2)}.`;
-    const link = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(msg)}`;
-
-    alert("Chave Pix copiada com sucesso! Abrindo seu WhatsApp...");
-    window.location.href = link;
-}
-
-        // Gerador de Filtros
-        const filtrosDiv = document.getElementById("filtros");
-        for (let i = 0; i < 10; i++) {
-            let min = (i * 100) + 1, max = (i + 1) * 100;
-            let btn = document.createElement("button");
-            btn.className = "btn-filtro" + (i === 0 ? " ativo" : "");
-            btn.innerText = `${min}-${max}`;
-            btn.onclick = () => {
-                minAtual = min; maxAtual = max;
-                document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("ativo"));
-                btn.classList.add("ativo");
-                render();
-            };
-            filtrosDiv.appendChild(btn);
-        }
-
-        function copyPix() {
-            navigator.clipboard.writeText("hemillyematheuscasamento26@gmail.com");
-            alert("Pix copiado!");
-        }
-
-        document.getElementById('busca').addEventListener('input', (e) => {
-            const num = parseInt(e.target.value);
-            if (num > 0 && num <= 1000) {
-                minAtual = Math.floor((num - 1) / 100) * 100 + 1;
-                maxAtual = minAtual + 99;
-                render();
-            }
+        fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify({ nome, telefone: tel, selecionados }),
         });
 
-        carregar();
+        // 4. Prepara e redireciona para o WhatsApp
+        const msg = `Olá! Sou ${nome}. Reservei os números: ${selecionados.join(
+          ", "
+        )}. Acabei de copiar a chave Pix e vou te enviar o comprovante de R$ ${(
+          selecionados.length * VALOR_RIFA
+        ).toFixed(2)}.`;
+        const link = `https://wa.me/${SEU_WHATSAPP}?text=${encodeURIComponent(
+          msg
+        )}`;
+
+        alert("Chave Pix copiada com sucesso! Abrindo seu WhatsApp...");
+        window.location.href = link;
+      }
+
+      const filtrosDiv = document.getElementById("filtros");
+      for (let i = 0; i < 10; i++) {
+        let min = i * 100 + 1,
+          max = (i + 1) * 100;
+        let btn = document.createElement("button");
+        btn.className = "btn-filtro" + (i === 0 ? " ativo" : "");
+        btn.innerText = `${min}-${max}`;
+        btn.onclick = () => {
+          minAtual = min;
+          maxAtual = max;
+          document
+            .querySelectorAll(".btn-filtro")
+            .forEach((b) => b.classList.remove("ativo"));
+          btn.classList.add("ativo");
+          render();
+        };
+        filtrosDiv.appendChild(btn);
+      }
+
+      function copyPix() {
+        navigator.clipboard.writeText("hemillyematheuscasamento26@gmail.com");
+        alert("Pix copiado!");
+      }
+
+      document.getElementById("busca").addEventListener("input", (e) => {
+        const num = parseInt(e.target.value);
+        if (num > 0 && num <= 1000) {
+          minAtual = Math.floor((num - 1) / 100) * 100 + 1;
+          maxAtual = minAtual + 99;
+          render();
+        }
+      });
+
+      carregar();
     </script>
-</body>
-
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
